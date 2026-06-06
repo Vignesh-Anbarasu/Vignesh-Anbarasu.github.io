@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Full Stack Developer — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;
+  --white:#f5f4f0;
+  --gray:#888;
+  --light-gray:#d0cfc9;
+  --border:#1e1e1e;
+  --accent:#f5f4f0;
+}
+html{scroll-behavior:smooth;cursor:none}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'DM Mono',monospace;
+  font-weight:300;
+  overflow-x:hidden;
+}
+
+/* Custom cursor */
+.cursor{
+  position:fixed;width:8px;height:8px;
+  background:var(--white);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s ease;
+}
+.cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1px solid rgba(245,244,240,0.4);border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform 0.15s ease, width 0.2s, height 0.2s, border-color 0.2s;
+}
+body:hover .cursor-ring{opacity:1}
+
+/* Noise overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:0.4;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--gray)}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:0 8vw;
+  overflow:hidden;
+}
+.hero-bg-text{
+  position:absolute;right:-2vw;top:50%;
+  transform:translateY(-50%);
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(8rem,18vw,22rem);
+  color:transparent;
+  -webkit-text-stroke:1px rgba(245,244,240,0.06);
+  letter-spacing:-0.05em;
+  user-select:none;
+  white-space:nowrap;
+  will-change:transform;
+}
+.hero-kana{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:clamp(0.7rem,1.2vw,1rem);
+  font-weight:300;
+  letter-spacing:0.4em;
+  color:var(--gray);
+  margin-bottom:2rem;
+  text-transform:uppercase;
+}
+.hero-name{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(3rem,8vw,9rem);
+  font-weight:700;
+  letter-spacing:-0.04em;
+  line-height:0.9;
+  margin-bottom:2rem;
+}
+.hero-name span{display:block;color:var(--gray);font-weight:400;font-size:0.5em}
+.hero-role{
+  font-size:clamp(0.75rem,1.3vw,1rem);
+  font-weight:400;
+  letter-spacing:0.15em;
+  color:var(--light-gray);
+  margin-bottom:3rem;
+  max-width:520px;
+  line-height:1.8;
+}
+.hero-badges{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  margin-bottom:4rem;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.4rem 1rem;
+  border:1px solid rgba(245,244,240,0.2);
+  font-size:0.7rem;letter-spacing:0.1em;
+  color:var(--light-gray);
+  font-family:'DM Mono',monospace;
+}
+.badge.nat{
+  border-color:rgba(245,244,240,0.5);
+  color:var(--white);
+  position:relative;
+  overflow:hidden;
+}
+.badge.nat::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent);
+  animation:shimmer 3s infinite;
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--white);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.hero-scroll{
+  position:absolute;bottom:3rem;right:8vw;
+  display:flex;flex-direction:column;align-items:center;gap:0.8rem;
+  font-size:0.65rem;letter-spacing:0.3em;color:var(--gray);
+  font-family:'Noto Sans JP',sans-serif;
+}
+.scroll-line{
+  width:1px;height:60px;
+  background:linear-gradient(to bottom,var(--gray),transparent);
+  animation:scroll-drop 2s infinite;
+}
+@keyframes scroll-drop{
+  0%{transform:scaleY(0);transform-origin:top}
+  50%{transform:scaleY(1);transform-origin:top}
+  51%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}
+}
+.hero-number{
+  position:absolute;top:3rem;right:8vw;
+  font-size:0.65rem;letter-spacing:0.2em;color:var(--gray);
+}
+
+/* ─── SECTION BASE ─── */
+section{padding:10vh 8vw}
+.section-label{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.65rem;letter-spacing:0.4em;
+  color:var(--gray);margin-bottom:5rem;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:1.5rem;
+}
+.section-label::after{
+  content:'';flex:1;max-width:120px;
+  height:1px;background:rgba(245,244,240,0.15);
+}
+
+/* ─── ABOUT ─── */
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:6rem;align-items:start;
+}
+.about-text h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(2.2rem,4vw,4rem);
+  font-weight:600;line-height:1.1;
+  margin-bottom:2.5rem;
+  letter-spacing:-0.03em;
+}
+.about-text p{
+  font-size:0.85rem;line-height:2;
+  color:var(--light-gray);margin-bottom:1.5rem;
+  font-weight:300;
+}
+.about-stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+  margin-top:4rem;
+}
+.stat{
+  padding:2rem 1.5rem;
+  border:1px solid rgba(245,244,240,0.08);
+  background:rgba(245,244,240,0.02);
+}
+.stat-num{
+  font-family:'Shippori Mincho',serif;
+  font-size:3.5rem;font-weight:700;
+  letter-spacing:-0.05em;
+  display:block;margin-bottom:0.3rem;
+}
+.stat-label{font-size:0.65rem;letter-spacing:0.2em;color:var(--gray)}
+.about-photo{
+  position:relative;
+}
+.photo-frame{
+  width:100%;aspect-ratio:3/4;
+  border:1px solid rgba(245,244,240,0.1);
+  background:rgba(245,244,240,0.03);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Shippori Mincho',serif;
+  font-size:6rem;color:rgba(245,244,240,0.08);
+  position:relative;overflow:hidden;
+}
+.photo-frame::before{
+  content:'';position:absolute;
+  top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 30% 40%,rgba(245,244,240,0.04),transparent 60%);
+}
+.photo-caption{
+  margin-top:1.5rem;
+  font-size:0.65rem;letter-spacing:0.2em;color:var(--gray);
+  text-align:center;
+}
+.cert-seal{
+  position:absolute;bottom:2rem;right:-2rem;
+  width:80px;height:80px;
+  border:1px solid rgba(245,244,240,0.3);
+  border-radius:50%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:rgba(10,10,10,0.9);
+  font-size:0.5rem;letter-spacing:0.12em;
+  text-align:center;line-height:1.4;
+}
+.cert-seal strong{
+  font-size:0.9rem;
+  font-family:'Shippori Mincho',serif;
+  display:block;
+}
+
+/* ─── SKILLS ─── */
+.skills-section{background:rgba(245,244,240,0.01)}
+.skills-marquee-wrap{
+  overflow:hidden;
+  border-top:1px solid rgba(245,244,240,0.08);
+  border-bottom:1px solid rgba(245,244,240,0.08);
+  padding:3rem 0;margin-bottom:6rem;
+}
+.skills-marquee{
+  display:flex;gap:0;
+  animation:marquee 30s linear infinite;
+  width:max-content;
+}
+.skills-marquee:hover{animation-play-state:paused}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.skill-chip{
+  display:inline-flex;align-items:center;gap:0.8rem;
+  padding:0.6rem 2rem;
+  border-right:1px solid rgba(245,244,240,0.08);
+  white-space:nowrap;
+  font-size:0.75rem;letter-spacing:0.15em;
+  color:var(--light-gray);font-weight:400;
+  transition:color 0.3s;
+}
+.skill-chip:hover{color:var(--white)}
+.skill-chip img{width:20px;height:20px;filter:grayscale(1) brightness(0.7);transition:filter 0.3s}
+.skill-chip:hover img{filter:grayscale(0) brightness(1)}
+
+/* Skills grid with parallax frames */
+.skills-frames-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.8rem,3vw,3rem);
+  font-weight:600;letter-spacing:-0.03em;
+  margin-bottom:4rem;
+}
+.skills-frames{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:2px;
+}
+.skill-frame{
+  padding:2.5rem 2rem;
+  border:1px solid rgba(245,244,240,0.06);
+  background:rgba(245,244,240,0.02);
+  position:relative;overflow:hidden;
+  transition:border-color 0.4s,background 0.4s;
+  will-change:transform;
+}
+.skill-frame::before{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:rgba(245,244,240,0.08);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.4s ease;
+}
+.skill-frame:hover::before{transform:scaleX(1)}
+.skill-frame:hover{border-color:rgba(245,244,240,0.15);background:rgba(245,244,240,0.04)}
+.skill-frame-icon{
+  width:48px;height:48px;margin-bottom:1.5rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.skill-frame-icon img{width:36px;height:36px;filter:grayscale(1) brightness(0.6);transition:filter 0.3s}
+.skill-frame:hover .skill-frame-icon img{filter:grayscale(0) brightness(1)}
+.skill-frame-icon .icon-letter{
+  font-size:1.8rem;color:rgba(245,244,240,0.2);
+  font-family:'Shippori Mincho',serif;font-weight:700;
+  transition:color 0.3s;
+}
+.skill-frame:hover .icon-letter{color:rgba(245,244,240,0.6)}
+.skill-frame h4{
+  font-size:0.8rem;font-weight:500;
+  letter-spacing:0.12em;margin-bottom:0.5rem;
+  text-transform:uppercase;
+}
+.skill-frame p{font-size:0.7rem;color:var(--gray);line-height:1.7}
+.skill-frame-num{
+  position:absolute;top:1.5rem;right:1.5rem;
+  font-size:0.6rem;color:rgba(245,244,240,0.15);
+  letter-spacing:0.1em;
+}
+
+/* ─── PROJECTS ─── */
+.projects-header{
+  display:flex;justify-content:space-between;
+  align-items:flex-end;margin-bottom:5rem;
+}
+.projects-header h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(2rem,4vw,4rem);
+  font-weight:600;letter-spacing:-0.03em;
+}
+.project-count{font-size:0.65rem;letter-spacing:0.2em;color:var(--gray)}
+
+.project-item{
+  display:grid;grid-template-columns:1fr 2fr 1fr;
+  gap:4rem;align-items:start;
+  padding:4rem 0;
+  border-top:1px solid rgba(245,244,240,0.08);
+  position:relative;
+  transition:padding-left 0.4s ease;
+}
+.project-item:hover{padding-left:2rem}
+.project-item:last-child{border-bottom:1px solid rgba(245,244,240,0.08)}
+.project-num{
+  font-size:0.65rem;letter-spacing:0.2em;color:var(--gray);
+  font-family:'DM Mono',monospace;padding-top:0.4rem;
+}
+.project-info h3{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.5rem,2.5vw,2.5rem);
+  font-weight:600;letter-spacing:-0.02em;
+  margin-bottom:1rem;
+}
+.project-info p{
+  font-size:0.8rem;color:var(--light-gray);
+  line-height:1.9;margin-bottom:1.5rem;
+}
+.project-tags{display:flex;flex-wrap:wrap;gap:0.5rem}
+.tag{
+  font-size:0.6rem;letter-spacing:0.1em;
+  padding:0.25rem 0.75rem;
+  border:1px solid rgba(245,244,240,0.15);
+  color:var(--gray);
+}
+.project-meta{text-align:right}
+.project-type{
+  font-size:0.65rem;letter-spacing:0.2em;
+  color:var(--gray);margin-bottom:1rem;
+  font-family:'Noto Sans JP',sans-serif;
+}
+.project-arrow{
+  display:inline-block;
+  width:40px;height:40px;
+  border:1px solid rgba(245,244,240,0.2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-left:auto;font-size:1.1rem;
+  transition:background 0.3s,border-color 0.3s,transform 0.3s;
+  cursor:pointer;color:var(--white);
+}
+.project-item:hover .project-arrow{
+  background:var(--white);color:var(--black);
+  border-color:var(--white);transform:rotate(45deg);
+}
+
+/* ─── TECH STACK VISUAL ─── */
+.stack-section{
+  padding:10vh 8vw;
+  border-top:1px solid rgba(245,244,240,0.06);
+}
+.stack-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.8rem,3vw,3rem);
+  font-weight:600;letter-spacing:-0.03em;
+  margin-bottom:5rem;
+}
+.stack-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+}
+.stack-cell{
+  padding:3rem 2rem;
+  border:1px solid rgba(245,244,240,0.05);
+  text-align:center;
+  transition:background 0.4s;
+  cursor:default;
+}
+.stack-cell:hover{background:rgba(245,244,240,0.03)}
+.stack-icon{
+  font-size:2rem;margin-bottom:1rem;
+  filter:grayscale(1);transition:filter 0.3s;
+}
+.stack-cell:hover .stack-icon{filter:grayscale(0)}
+.stack-name{font-size:0.7rem;letter-spacing:0.15em;color:var(--light-gray)}
+.stack-sub{font-size:0.6rem;color:var(--gray);margin-top:0.3rem}
+
+/* ─── EXPERIENCE BAR ─── */
+.exp-section{padding:10vh 8vw}
+.exp-bar-item{
+  display:grid;grid-template-columns:180px 1fr 60px;
+  gap:2rem;align-items:center;
+  padding:1.5rem 0;
+  border-bottom:1px solid rgba(245,244,240,0.06);
+}
+.exp-label{font-size:0.7rem;letter-spacing:0.12em;color:var(--light-gray)}
+.exp-bar{height:1px;background:rgba(245,244,240,0.08);position:relative}
+.exp-fill{
+  position:absolute;top:0;left:0;height:1px;
+  background:rgba(245,244,240,0.5);
+  transition:width 1.5s cubic-bezier(0.16,1,0.3,1);
+  width:0;
+}
+.exp-fill.animate{width:var(--w)}
+.exp-level{font-size:0.65rem;color:var(--gray);letter-spacing:0.1em;text-align:right}
+
+/* ─── CONTACT ─── */
+.contact-section{
+  min-height:60vh;
+  display:flex;flex-direction:column;
+  justify-content:center;padding:15vh 8vw;
+  border-top:1px solid rgba(245,244,240,0.08);
+}
+.contact-section h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(3rem,7vw,8rem);
+  font-weight:700;letter-spacing:-0.04em;
+  line-height:1;margin-bottom:3rem;
+}
+.contact-links{display:flex;gap:2rem;flex-wrap:wrap}
+.clink{
+  font-size:0.75rem;letter-spacing:0.15em;
+  color:var(--light-gray);
+  text-decoration:none;
+  display:flex;align-items:center;gap:0.6rem;
+  padding-bottom:0.3rem;
+  border-bottom:1px solid rgba(245,244,240,0.15);
+  transition:color 0.3s,border-color 0.3s;
+}
+.clink:hover{color:var(--white);border-color:var(--white)}
+.clink-arrow{transition:transform 0.3s}
+.clink:hover .clink-arrow{transform:translate(3px,-3px)}
+
+/* ─── FOOTER ─── */
+footer{
+  padding:3rem 8vw;
+  border-top:1px solid rgba(245,244,240,0.06);
+  display:flex;justify-content:space-between;
+  align-items:center;
+  font-size:0.65rem;letter-spacing:0.12em;color:var(--gray);
+}
+
+/* ─── PARALLAX PARTICLES ─── */
+.parallax-layer{
+  position:fixed;inset:0;pointer-events:none;z-index:2;
+}
+.p-dot{
+  position:absolute;width:1px;height:1px;
+  background:rgba(245,244,240,0.4);
+  border-radius:50%;
+}
+
+/* ─── FADE IN ─── */
+.fade-up{
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* Responsive */
+@media(max-width:768px){
+  .about-grid{grid-template-columns:1fr}
+  .project-item{grid-template-columns:1fr;gap:1rem}
+  .project-meta{text-align:left}
+  .stack-grid{grid-template-columns:repeat(2,1fr)}
+  .exp-bar-item{grid-template-columns:120px 1fr 50px}
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- Parallax dots -->
+<div class="parallax-layer" id="parallax-layer"></div>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-bg-text" id="hero-bg">開発者</div>
+  <div class="hero-number">01 / 05</div>
+
+  <div class="hero-kana fade-up">Java · Spring Boot · Full Stack</div>
+  <h1 class="hero-name fade-up" style="transition-delay:0.1s">
+    Full Stack
+    <span>Developer</span>
+  </h1>
+  <p class="hero-role fade-up" style="transition-delay:0.2s">
+    3 years crafting enterprise-grade systems — ERP, HCM, CRM, Construction Management — end to end, from schema to deployment.
+  </p>
+  <div class="hero-badges fade-up" style="transition-delay:0.3s">
+    <div class="badge nat">
+      <div class="badge-dot"></div>
+      NAT · Q5 · Japanese Certified
+    </div>
+    <div class="badge">3 YRS Experience</div>
+    <div class="badge">Full Stack · Java</div>
+    <div class="badge">Cloud · CI/CD</div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ABOUT ═══════════════════════ -->
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="about-grid">
+    <div class="about-text">
+      <h2 class="fade-up">Architect of<br>Scalable Systems</h2>
+      <p class="fade-up">I design and build enterprise applications from the ground up — monolithic or microservice, on-prem or cloud. My work spans entire product lifecycles: requirement analysis, database modeling, API architecture, frontend integration, testing, and CI/CD pipeline setup.</p>
+      <p class="fade-up">Certified in Japanese (NAT-Q5), I bring cross-cultural communication and precision to every project. My applications manage real business complexity — payroll, contracts, asset tracking, recruitment, and role-based access across large organizations.</p>
+      <div class="about-stats fade-up">
+        <div class="stat"><span class="stat-num">3+</span><span class="stat-label">Years Experience</span></div>
+        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">Major Products</span></div>
+        <div class="stat"><span class="stat-num">NAT</span><span class="stat-label">Q5 Japanese</span></div>
+        <div class="stat"><span class="stat-num">E2E</span><span class="stat-label">Dev · Test · Deploy</span></div>
+      </div>
+    </div>
+    <div class="about-photo fade-up">
+      <div class="photo-frame" style="padding:0;overflow:hidden;">
+  <img src="https://raw.githubusercontent.com/Vignesh-Anbarasu/Vk_Abytz/main/vignesh.png" 
+       alt="Vignesh Anbu"
+       style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);">
+  <div class="cert-seal">
+    <strong>NAT</strong>
+    Q5<br>CERTIFIED<br>日本語
+  </div>
+</div>
+<p class="photo-caption">Vignesh Anbu — Java Full Stack Developer</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SKILLS ═══════════════════════ -->
+<section id="skills" class="skills-section">
+  <div class="section-label">Skills</div>
+
+  <!-- Marquee strip -->
+  <div class="skills-marquee-wrap">
+    <div class="skills-marquee" id="marquee">
+      <!-- set 1 -->
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">Java
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring">Spring Boot
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL">SQL
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB">MongoDB
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg" alt="Hibernate">Hibernate
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">React
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node">Node.js
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">Docker
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins">Jenkins
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">Git
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg" alt="AWS">Cloud / AWS
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/maven/maven-original.svg" alt="Maven">Maven
+      </div>
+      <div class="skill-chip">
+        <span style="font-size:1rem;color:rgba(245,244,240,0.4)">🔐</span>JWT Security
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/junit/junit-plain.svg" alt="JUnit">JUnit
+      </div>
+      <!-- duplicate for seamless loop -->
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">Java</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring">Spring Boot</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL">SQL</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB">MongoDB</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg" alt="Hibernate">Hibernate</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">React</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node">Node.js</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">Docker</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins">Jenkins</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">Git</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg" alt="AWS">Cloud / AWS</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/maven/maven-original.svg" alt="Maven">Maven</div>
+      <div class="skill-chip"><span style="font-size:1rem;color:rgba(245,244,240,0.4)">🔐</span>JWT Security</div>
+      <div class="skill-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/junit/junit-plain.svg" alt="JUnit">JUnit</div>
+    </div>
+  </div>
+
+  <!-- Skill frames grid with parallax -->
+  <h3 class="skills-frames-title fade-up">Core Competencies</h3>
+  <div class="skills-frames">
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.05">
+      <span class="skill-frame-num">01</span>
+      <div class="skill-frame-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java"></div>
+      <h4>Java · Spring Boot</h4>
+      <p>REST APIs, microservices, Spring Security, JPA, Hibernate ORM, Maven build lifecycle</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.08" style="transition-delay:0.05s">
+      <span class="skill-frame-num">02</span>
+      <div class="skill-frame-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL"></div>
+      <h4>Database Layer</h4>
+      <p>SQL query optimization, MongoDB document design, schema modeling for enterprise ERP</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.06" style="transition-delay:0.1s">
+      <span class="skill-frame-num">03</span>
+      <div class="skill-frame-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React"></div>
+      <h4>React · Node.js</h4>
+      <p>Frontend integration, component architecture, REST consumption, Node backend services</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.09" style="transition-delay:0.15s">
+      <span class="skill-frame-num">04</span>
+      <div class="skill-frame-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker"></div>
+      <h4>DevOps · CI/CD</h4>
+      <p>Docker containerization, Jenkins pipelines, Git workflow, cloud deployment strategies</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.04" style="transition-delay:0.2s">
+      <span class="skill-frame-num">05</span>
+      <div class="skill-frame-icon"><span class="icon-letter">🔐</span></div>
+      <h4>Security · JWT</h4>
+      <p>JWT authentication, role-based access control, Spring Security, API gateway protection</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.07" style="transition-delay:0.25s">
+      <span class="skill-frame-num">06</span>
+      <div class="skill-frame-icon"><span class="icon-letter">系</span></div>
+      <h4>System Design</h4>
+      <p>Scalable architecture, ERD modeling, multi-tenant SaaS patterns, microservice decomposition</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.05" style="transition-delay:0.3s">
+      <span class="skill-frame-num">07</span>
+      <div class="skill-frame-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/junit/junit-plain.svg" alt="JUnit"></div>
+      <h4>Testing · JUnit</h4>
+      <p>Unit testing, integration testing, TDD practices, mock frameworks, test coverage analysis</p>
+    </div>
+
+    <div class="skill-frame parallax-frame fade-up" data-speed="0.06" style="transition-delay:0.35s">
+      <span class="skill-frame-num">08</span>
+      <div class="skill-frame-icon"><span class="icon-letter">日</span></div>
+      <h4>Japanese · NAT Q5</h4>
+      <p>Certified Japanese proficiency. Cross-cultural team collaboration and documentation</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════ EXPERIENCE BARS ═══════════════════════ -->
+<section class="exp-section" id="proficiency">
+  <div class="section-label">Proficiency</div>
+  <div id="exp-bars">
+    <div class="exp-bar-item fade-up"><span class="exp-label">Java / Spring Boot</span><div class="exp-bar"><div class="exp-fill" style="--w:92%"></div></div><span class="exp-level">Expert</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">SQL / Hibernate</span><div class="exp-bar"><div class="exp-fill" style="--w:88%"></div></div><span class="exp-level">Advanced</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">MongoDB</span><div class="exp-bar"><div class="exp-fill" style="--w:78%"></div></div><span class="exp-level">Advanced</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">React / Node.js</span><div class="exp-bar"><div class="exp-fill" style="--w:75%"></div></div><span class="exp-level">Advanced</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">Docker / Jenkins</span><div class="exp-bar"><div class="exp-fill" style="--w:82%"></div></div><span class="exp-level">Advanced</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">System Design</span><div class="exp-bar"><div class="exp-fill" style="--w:80%"></div></div><span class="exp-level">Advanced</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">JWT / Security</span><div class="exp-bar"><div class="exp-fill" style="--w:85%"></div></div><span class="exp-level">Advanced</span></div>
+    <div class="exp-bar-item fade-up"><span class="exp-label">Japanese (NAT Q5)</span><div class="exp-bar"><div class="exp-fill" style="--w:65%"></div></div><span class="exp-level">Certified</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ PROJECTS ═══════════════════════ -->
+<section id="projects">
+  <div class="section-label">Projects</div>
+  <div class="projects-header">
+    <h2 class="fade-up">Selected<br>Work</h2>
+    <span class="project-count">05 Projects</span>
+  </div>
+
+  <div class="project-item fade-up">
+    <div class="project-num">001</div>
+    <div class="project-info">
+      <h3>ERP System</h3>
+      <p>Enterprise Resource Planning covering inventory, procurement, finance, and HR modules. Designed multi-tenant architecture with role-based access control, supporting hundreds of concurrent users with sub-second query response times.</p>
+      <div class="project-tags">
+        <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">SQL</span><span class="tag">Hibernate</span><span class="tag">React</span><span class="tag">JWT</span>
+      </div>
+    </div>
+    <div class="project-meta">
+      <div class="project-type">Enterprise · Web App</div>
+      <div class="project-arrow">↗</div>
+    </div>
+  </div>
+
+  <div class="project-item fade-up">
+    <div class="project-num">002</div>
+    <div class="project-info">
+      <h3>CRM Platform</h3>
+      <p>Customer Relationship Management system with pipeline tracking, lead scoring, task automation, and communication logs. Integrated email and role-based dashboards for sales teams of varying hierarchy.</p>
+      <div class="project-tags">
+        <span class="tag">Spring Boot</span><span class="tag">MongoDB</span><span class="tag">Node.js</span><span class="tag">Docker</span><span class="tag">REST API</span>
+      </div>
+    </div>
+    <div class="project-meta">
+      <div class="project-type">SaaS · Web App</div>
+      <div class="project-arrow">↗</div>
+    </div>
+  </div>
+
+  <div class="project-item fade-up">
+    <div class="project-num">003</div>
+    <div class="project-info">
+      <h3>Construction Management</h3>
+      <p>End-to-end platform for construction projects — salary management, attendance tracking, contract lifecycle, and site resource allocation. Includes approval workflows and real-time progress reporting.</p>
+      <div class="project-tags">
+        <span class="tag">Java</span><span class="tag">Spring Security</span><span class="tag">SQL</span><span class="tag">React</span><span class="tag">Jenkins</span>
+      </div>
+    </div>
+    <div class="project-meta">
+      <div class="project-type">Enterprise · Web App</div>
+      <div class="project-arrow">↗</div>
+    </div>
+  </div>
+
+  <div class="project-item fade-up">
+    <div class="project-num">004</div>
+    <div class="project-info">
+      <h3>HCM Suite</h3>
+      <p>Human Capital Management application with Payroll processing, Performance Management System (PMS), Asset Management, Job Portal, and Onboarding workflows — all under a single role-based master application.</p>
+      <div class="project-tags">
+        <span class="tag">Spring Boot</span><span class="tag">Hibernate</span><span class="tag">MongoDB</span><span class="tag">JWT</span><span class="tag">Docker</span><span class="tag">JUnit</span>
+      </div>
+    </div>
+    <div class="project-meta">
+      <div class="project-type">SaaS · HCM Platform</div>
+      <div class="project-arrow">↗</div>
+    </div>
+  </div>
+
+  <div class="project-item fade-up">
+    <div class="project-num">005</div>
+    <div class="project-info">
+      <h3>Job Portal & Onboarding</h3>
+      <p>Full recruitment lifecycle — job posting, applicant tracking, interview scheduling, offer management, and onboarding checklists. Fully integrated with the HCM suite for seamless employee data flow.</p>
+      <div class="project-tags">
+        <span class="tag">Node.js</span><span class="tag">React</span><span class="tag">Spring Boot</span><span class="tag">SQL</span><span class="tag">CI/CD</span>
+      </div>
+    </div>
+    <div class="project-meta">
+      <div class="project-type">Platform · Web App</div>
+      <div class="project-arrow">↗</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════ TECH STACK ═══════════════════════ -->
+<section class="stack-section">
+  <div class="section-label">Tech Stack</div>
+  <h3 class="stack-title fade-up">Tools I Work With</h3>
+  <div class="stack-grid">
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">☕</div>
+      <div class="stack-name">Java</div><div class="stack-sub">Core language</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🌱</div>
+      <div class="stack-name">Spring Boot</div><div class="stack-sub">Backend framework</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🗄️</div>
+      <div class="stack-name">SQL / MySQL</div><div class="stack-sub">Relational DB</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🍃</div>
+      <div class="stack-name">MongoDB</div><div class="stack-sub">NoSQL DB</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">⚛️</div>
+      <div class="stack-name">React</div><div class="stack-sub">Frontend</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🟢</div>
+      <div class="stack-name">Node.js</div><div class="stack-sub">JS backend</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🐋</div>
+      <div class="stack-name">Docker</div><div class="stack-sub">Containers</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🔧</div>
+      <div class="stack-name">Jenkins</div><div class="stack-sub">CI/CD</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">☁️</div>
+      <div class="stack-name">Cloud</div><div class="stack-sub">Deployment</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🔀</div>
+      <div class="stack-name">Git</div><div class="stack-sub">Version control</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🔐</div>
+      <div class="stack-name">JWT</div><div class="stack-sub">Auth / Security</div>
+    </div>
+    <div class="stack-cell fade-up">
+      <div class="stack-icon">🧪</div>
+      <div class="stack-name">JUnit</div><div class="stack-sub">Testing</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONTACT ═══════════════════════ -->
+<section class="contact-section" id="contact">
+  <div class="section-label">Contact</div>
+  <h2 class="fade-up">Let's<br>Build<br>Together</h2>
+  <div class="contact-links fade-up">
+    <a href="https://github.com/Vignesh-Anbarasu/Vk_Abytz" class="clink" target="_blank">
+      GitHub <span class="clink-arrow">↗</span>
+    </a>
+    <a href="mailto:vigneshanbarasu.dev@gmail.com" class="clink">
+      Email <span class="clink-arrow">↗</span>
+    </a>
+    <a href="https://www.linkedin.com/in/vignesh-anbu?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="clink" target="_blank">
+      LinkedIn <span class="clink-arrow">↗</span>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <span>Java Full Stack Developer</span>
+  <span>NAT · Q5 · 日本語能力</span>
+  <span>© 2026</span>
+</footer>
+
+<script>
+// ── Custom cursor
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.project-arrow,.skill-frame').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    ring.style.width='60px';ring.style.height='60px';
+    ring.style.borderColor='rgba(245,244,240,0.6)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    ring.style.width='36px';ring.style.height='36px';
+    ring.style.borderColor='rgba(245,244,240,0.4)';
+  });
+});
+
+// ── Hero parallax bg text
+const heroBg = document.getElementById('hero-bg');
+window.addEventListener('scroll',()=>{
+  const y = window.scrollY;
+  heroBg.style.transform = `translateY(calc(-50% + ${y*0.3}px))`;
+});
+
+// ── Parallax frames on scroll
+const pFrames = document.querySelectorAll('.parallax-frame');
+window.addEventListener('scroll',()=>{
+  const sy = window.scrollY;
+  pFrames.forEach(f=>{
+    const speed = parseFloat(f.dataset.speed||0.05);
+    const rect = f.getBoundingClientRect();
+    const offset = (rect.top + rect.height/2 - window.innerHeight/2) * speed;
+    f.style.transform = `translateY(${offset}px)`;
+  });
+});
+
+// ── Floating particles
+const layer = document.getElementById('parallax-layer');
+const dots = [];
+for(let i=0;i<40;i++){
+  const d = document.createElement('div');
+  d.className='p-dot';
+  const x=Math.random()*100, y=Math.random()*100;
+  const size=Math.random()*1.5+0.5;
+  const speed=Math.random()*0.08+0.02;
+  d.style.cssText=`left:${x}%;top:${y}%;width:${size}px;height:${size}px;opacity:${Math.random()*0.3+0.1}`;
+  layer.appendChild(d);
+  dots.push({el:d,x,y,speed});
+}
+window.addEventListener('scroll',()=>{
+  const sy = window.scrollY;
+  dots.forEach(d=>{
+    d.el.style.transform=`translateY(${sy*d.speed}px)`;
+  });
+});
+
+// ── Fade in on scroll
+const faders = document.querySelectorAll('.fade-up');
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.1,rootMargin:'0px 0px -60px 0px'});
+faders.forEach(f=>obs.observe(f));
+
+// ── Animate experience bars
+const barObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.exp-fill').forEach(f=>{
+        setTimeout(()=>f.classList.add('animate'),200);
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+const barSection = document.getElementById('exp-bars');
+if(barSection) barObs.observe(barSection);
+</script>
+</body>
+</html>
